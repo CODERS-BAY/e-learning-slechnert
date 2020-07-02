@@ -1,0 +1,89 @@
+CREATE TABLE learning_modules(
+	learning_module_id int(10),
+	learning_module_name varchar(40),
+	PRIMARY KEY (learning_module_id)
+);
+
+CREATE TABLE learning_objects(
+	learning_object_name varchar(40),
+	learning_module int(10),
+	type varchar(20),
+	PRIMARY KEY (name),
+	FOREIGN KEY (learning_object_name) REFERENCES learning_modules(learning_module_id)
+);
+
+CREATE TABLE e_courses(
+	LVANR int(10),
+	course_name varchar(40),
+	max_participants int(3),
+	hours int(3),
+	PRIMARY KEY (LVANR)
+);
+
+CREATE TABLE requirements(
+	course int(10),
+	requires int(10),
+	PRIMARY KEY (course, requires),
+	FOREIGN KEY (course) REFERENCES e_courses(LVANR),
+	FOREIGN KEY (course) REFERENCES e_courses(LVANR)
+);
+
+CREATE TABLE learning_module_assignments(
+	learning_module_id int(10),
+	LVANR int(10),
+	name varchar(40),
+	PRIMARY KEY (learning_module_id, LVANR),
+	FOREIGN KEY (learning_module_id) REFERENCES learning_modules(learning_module_id),
+	FOREIGN KEY (LVANR) REFERENCES e_courses(LVANR)
+);
+
+CREATE TABLE test_modules(
+	test_module_id int(10),
+	definition varchar(40),
+	mode varchar(20),
+	fees double(3,2),
+	external tinyint(1),
+	total_time int(3),
+	deadline date,
+	PRIMARY KEY (test_module_id)
+);
+
+CREATE TABLE test_assignments(
+	course int(10),
+	test int(10),
+	PRIMARY KEY (course, test),
+	FOREIGN KEY (course) REFERENCES e_courses(LVANR),
+	FOREIGN KEY (test) REFERENCES test_modules(test_module_id)
+);
+
+CREATE TABLE questionnaire(
+	question_id int(10),
+	question varchar(160),
+	answer_correct varchar(80),
+	answer_false_1 varchar(80),
+	answer_false_2 varchar(80),
+	PRIMARY KEY (question_id)
+);
+
+CREATE TABLE question_assignment(
+	test int(10),
+	question int(10),
+	PRIMARY KEY (test, question),
+	FOREIGN KEY (test) REFERENCES test_modules(test_module_id),
+	FOREIGN KEY (question) REFERENCES questionnaire(question_id)
+);
+
+CREATE TABLE persons(
+	pnr int(10),
+	firstname varchar(40),
+	surname varchar(40),
+	PRIMARY KEY (pnr)
+);
+
+CREATE TABLE moderations(
+	course int(10),
+	person int(10),
+	PRIMARY KEY (course, person),
+	FOREIGN KEY (course) REFERENCES e_courses(LVANR),
+	FOREIGN KEY (person) REFERENCES persons(pnr)
+);
